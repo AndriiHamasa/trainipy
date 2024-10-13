@@ -143,6 +143,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "station.permissions.IsAdminOrReadOnly",
     ),
+    "DEFAULT_PAGINATION_CLASS": "station.pagination.StationLimitOffsetPagination",
 }
 
 
