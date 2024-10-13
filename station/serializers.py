@@ -24,15 +24,44 @@ class TrainSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Train
-        fields = ("id", "name", "cargo_num", "places_in_cargo", "train_type")
+        fields = ("id", "name", "cargo_num", "places_in_cargo", "train_type", "image")
 
 
-class TrainCreateSerializer(TrainSerializer):
-    train_type = serializers.SlugRelatedField(
-        many=False,
-        queryset=TrainType.objects.all(),
-        slug_field="name"
-    )
+class JourneyTrainSerializer(serializers.ModelSerializer):
+    departure_place = serializers.CharField(source="route.source.name")
+    arrival_place = serializers.CharField(source="route.destination.name")
+
+    class Meta:
+        model = Journey
+        fields = (
+            "id",
+            "departure_place",
+            "arrival_place",
+            "departure_time",
+            "arrival_time",
+        )
+
+
+class TrainCreateSerializer(serializers.ModelSerializer):  #TrainSerializer
+    # journeys = serializers.PrimaryKeyRelatedField(
+    #     many=True,
+    #     queryset=Journey.objects.all(),
+    # )
+    journeys = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Train
+        fields = ("id", "name", "cargo_num", "places_in_cargo", "train_type", "journeys")
+
+    def get_journeys(self, obj):
+        last_five_journeys = obj.journeys.select_related("route__source", "route__destination").order_by('-id')[:5]
+        return JourneyTrainSerializer(last_five_journeys, many=True).data
+
+
+class TrainImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = ("id", "image")
 
 
 class TrainJourneySerializer(TrainSerializer):
