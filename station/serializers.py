@@ -183,7 +183,7 @@ class OrderSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             tickets_data = validated_data.pop("tickets")
             order = Order.objects.create(**validated_data)
-            print("WE WERE HERE: ", order)
+
             for ticket_data in tickets_data:
                 Ticket.objects.create(order=order, **ticket_data)
 

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "rest_framework",
     "drf_spectacular",
+    "django_celery_beat",
+    "django_celery_results",
     # "rest_framework_simplejwt",
     "station",
     "user",
@@ -196,3 +198,40 @@ SPECTACULAR_SETTINGS = {
     }
 }
 
+
+# # Backend email
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "andrii.khamaza@nure.ua"
+# EMAIL_HOST_PASSWORD = "zgcfgnbdavngvsac"
+#
+#
+# # celery
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_TIMEZONE = "Europe/Kiev"
+#
+# CELERY_RESULT_BACKEND = "django-db"
+#
+# CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
+
+# Backend email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "andrii.khamaza@nure.ua"
+EMAIL_HOST_PASSWORD = "zgcfgnbdavngvsac"
+
+# Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = "Europe/Kiev"
+
+
+
+
+# celery -A trainipy worker -l info -P solo

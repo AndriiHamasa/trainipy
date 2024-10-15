@@ -6,7 +6,8 @@ from station.views import (
     TrainTypeViewSet,
     StationViewSet,
     RouteViewSet,
-    JourneyViewSet, OrderViewSet,
+    JourneyViewSet,
+    OrderViewSet,
 )
 
 router = routers.DefaultRouter()
