@@ -10,6 +10,7 @@ from rest_framework import status
 
 TRAIN_TYPE_URL = reverse("station:traintype-list")
 
+
 def sample_train_type(**params):
     defaults = {
         "name": "default_train_type",
@@ -40,7 +41,7 @@ class AuthenticatedTrainTypeAPITests(TestCase):
             email="test@test.com", password="test1234"
         )
         self.client.force_authenticate(self.user)
-        self.station= sample_train_type()
+        self.station = sample_train_type()
 
     def test_create_crew_forbidden(self):
         payload = {

@@ -10,6 +10,7 @@ from rest_framework import status
 
 CREW_URL = reverse("station:crew-list")
 
+
 def sample_crew(**params):
     defaults = {
         "first_name": "Peter",
@@ -38,8 +39,10 @@ class UnauthenticatedAndAuthenticatedCrewAPITests(TestCase):
         fred_crew = sample_crew(first_name="Fred", last_name="Fred")
         default_crew = sample_crew(first_name="John", last_name="Doe")
 
-        for filter_field, filter_value in [("first_name", default_crew.first_name),
-                                           ("last_name", default_crew.last_name)]:
+        for filter_field, filter_value in [
+            ("first_name", default_crew.first_name),
+            ("last_name", default_crew.last_name),
+        ]:
             res = self.client.get(CREW_URL, {filter_field: filter_value})
 
             serializer_default = CrewSerializer(default_crew)

@@ -4,16 +4,15 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 
 from station.models import Train, TrainType
-from station.serializers import TrainSerializer, TrainTypeSerializer
+from station.serializers import TrainSerializer
 from rest_framework import status
 
 
 TRAIN_URL = reverse("station:train-list")
 
+
 def sample_train_type(name):
-    defaults = {
-        "name": name
-    }
+    defaults = {"name": name}
 
     return TrainType.objects.create(**defaults)
 
@@ -23,7 +22,7 @@ def sample_train(train_type, **params):
         "name": "test_train",
         "cargo_num": 1,
         "places_in_cargo": 56,
-        "train_type": train_type
+        "train_type": train_type,
     }
     defaults.update(params)
 
@@ -33,7 +32,9 @@ def sample_train(train_type, **params):
 class UnauthenticatedAndAuthenticatedTrainAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.train = sample_train(train_type=sample_train_type(name="default_train_type"))
+        self.train = sample_train(
+            train_type=sample_train_type(name="default_train_type")
+        )
 
     def test_train_list(self):
         res = self.client.get(TRAIN_URL)
@@ -44,12 +45,13 @@ class UnauthenticatedAndAuthenticatedTrainAPITests(TestCase):
         self.assertEqual(res.data["results"], serializer.data)
 
     def test_filter_train(self):
-        second_train = sample_train(name="test_train_3", train_type=sample_train_type(name="quick"))
+        second_train = sample_train(
+            name="test_train_3", train_type=sample_train_type(name="quick")
+        )
 
         res = self.client.get(TRAIN_URL, {"name": self.train.name})
 
         serializer_first = TrainSerializer(self.train)
-        serializer_second = TrainSerializer(second_train)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(serializer_first.data, res.data["results"])
@@ -83,5 +85,3 @@ class AdminTrainTests(TestCase):
             email="admin@test.com", password="test1234"
         )
         self.client.force_authenticate(self.user)
-
-

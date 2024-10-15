@@ -4,7 +4,16 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from station.models import Crew, Train, TrainType, Station, Route, Journey, Ticket, Order
+from station.models import (
+    Crew,
+    Train,
+    TrainType,
+    Station,
+    Route,
+    Journey,
+    Ticket,
+    Order,
+)
 
 
 class CrewSerializer(serializers.ModelSerializer):
@@ -24,7 +33,14 @@ class TrainSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Train
-        fields = ("id", "name", "cargo_num", "places_in_cargo", "train_type", "image")
+        fields = (
+            "id",
+            "name",
+            "cargo_num",
+            "places_in_cargo",
+            "train_type",
+            "image"
+        )
 
 
 class JourneyTrainSerializer(serializers.ModelSerializer):
@@ -42,19 +58,24 @@ class JourneyTrainSerializer(serializers.ModelSerializer):
         )
 
 
-class TrainCreateSerializer(serializers.ModelSerializer):  #TrainSerializer
-    # journeys = serializers.PrimaryKeyRelatedField(
-    #     many=True,
-    #     queryset=Journey.objects.all(),
-    # )
+class TrainCreateSerializer(serializers.ModelSerializer):
     journeys = serializers.SerializerMethodField()
 
     class Meta:
         model = Train
-        fields = ("id", "name", "cargo_num", "places_in_cargo", "train_type", "journeys")
+        fields = (
+            "id",
+            "name",
+            "cargo_num",
+            "places_in_cargo",
+            "train_type",
+            "journeys",
+        )
 
     def get_journeys(self, obj):
-        last_five_journeys = obj.journeys.select_related("route__source", "route__destination").order_by('-id')[:5]
+        last_five_journeys = obj.journeys.select_related(
+            "route__source", "route__destination"
+        ).order_by("-id")[:5]
         return JourneyTrainSerializer(last_five_journeys, many=True).data
 
 
@@ -87,14 +108,10 @@ class RouteSerializer(serializers.ModelSerializer):
 
 class RouteCreateSerializer(RouteSerializer):
     source = serializers.SlugRelatedField(
-        many=False,
-        queryset=Station.objects.all(),
-        slug_field="name"
+        many=False, queryset=Station.objects.all(), slug_field="name"
     )
     destination = serializers.SlugRelatedField(
-        many=False,
-        queryset=Station.objects.all(),
-        slug_field="name"
+        many=False, queryset=Station.objects.all(), slug_field="name"
     )
 
 
@@ -120,7 +137,14 @@ class JourneyListSerializer(serializers.ModelSerializer):
 class JourneyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
-        fields = ("id", "route", "train", "departure_time", "arrival_time", "workers")
+        fields = (
+            "id",
+            "route",
+            "train",
+            "departure_time",
+            "arrival_time",
+            "workers"
+        )
 
     def validate_departure_time(self, value):
         if value < timezone.now():
@@ -137,12 +161,20 @@ class JourneyCreateSerializer(serializers.ModelSerializer):
         arrival_time = attrs.get("arrival_time")
 
         if departure_time >= arrival_time:
-            raise ValidationError("Departure time must be earlier than arrival time.")
+            raise ValidationError(
+                "Departure time must be earlier than arrival time."
+            )
 
-        # Проверка на уникальность Journey
         route = attrs.get("route")
-        if Journey.objects.filter(departure_time=departure_time, arrival_time=arrival_time, route=route).exists():
-            raise ValidationError("Journey with this departure, arrival time and route already exists.")
+        if Journey.objects.filter(
+            departure_time=departure_time,
+            arrival_time=arrival_time,
+            route=route
+        ).exists():
+            raise ValidationError(
+                "Journey with this departure, arrival time "
+                "and route already exists."
+            )
 
         return attrs
 
@@ -168,7 +200,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = ("id", "cargo", "seat", "journey")  #"order"
+        fields = ("id", "cargo", "seat", "journey")  # "order"
 
 
 class OrderSerializer(serializers.ModelSerializer):

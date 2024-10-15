@@ -10,6 +10,7 @@ from rest_framework import status
 
 STATION_URL = reverse("station:station-list")
 
+
 def sample_station(**params):
     defaults = {
         "name": "test_station",
@@ -35,13 +36,21 @@ class UnauthenticatedAndAuthenticatedStationAPITests(TestCase):
         self.assertEqual(res.data["results"], serializer.data)
 
     def test_filter_station(self):
-        first_station = sample_station(name="test2", latitude=43.5679, longitude=43.5679)
-        second_station = sample_station(name="test3", latitude=45.5679, longitude=45.5679)
-        third_station = sample_station(name="test4", latitude=45.6679, longitude=45.6679)
+        first_station = sample_station(
+            name="test2", latitude=43.5679, longitude=43.5679
+        )
+        second_station = sample_station(
+            name="test3", latitude=45.5679, longitude=45.5679
+        )
+        third_station = sample_station(
+            name="test4", latitude=45.6679, longitude=45.6679
+        )
 
-        for filter_field, filter_value in [("name", first_station.name),
-                                           ("latitude", first_station.latitude),
-                                           ("longitude", first_station.longitude)]:
+        for filter_field, filter_value in [
+            ("name", first_station.name),
+            ("latitude", first_station.latitude),
+            ("longitude", first_station.longitude),
+        ]:
             res = self.client.get(STATION_URL, {filter_field: filter_value})
 
             serializer_first = StationSerializer(first_station)
@@ -61,7 +70,7 @@ class AuthenticatedStationAPITests(TestCase):
             email="test@test.com", password="test1234"
         )
         self.client.force_authenticate(self.user)
-        self.station= sample_station()
+        self.station = sample_station()
 
     def test_create_crew_forbidden(self):
         payload = {
