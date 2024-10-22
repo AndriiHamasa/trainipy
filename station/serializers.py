@@ -108,10 +108,10 @@ class RouteSerializer(serializers.ModelSerializer):
 
 class RouteCreateSerializer(RouteSerializer):
     source = serializers.SlugRelatedField(
-        many=False, queryset=Station.objects.all(), slug_field="name"
+        queryset=Station.objects.all(), slug_field="name"
     )
     destination = serializers.SlugRelatedField(
-        many=False, queryset=Station.objects.all(), slug_field="name"
+        queryset=Station.objects.all(), slug_field="name"
     )
 
 
@@ -204,7 +204,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketSerializer(many=True)
 
     class Meta:
         model = Order
